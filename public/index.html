@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Census</title>
+  <meta name="description" content="Census: every business of one category in a whole city, from the SearchApi Google Maps API. Grid sweep, deduplication, filters and CSV, all local.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="/favicon.svg" alt="">
+      Census <small>Google Maps API</small>
+    </div>
+    <div class="spacer"></div>
+    <span class="pill muted" id="usage" title="Live requests to SearchApi since the first sweep">0 requests</span>
+    <span class="pill" id="key-status">checking key…</span>
+    <button id="connect-key" hidden>Connect key</button>
+    <button id="add-project">Add project</button>
+  </header>
+
+  <main>
+    <div id="notice" hidden></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="view"></div>
+  </main>
+
+  <dialog id="project-dialog">
+    <h2>Add or edit a project</h2>
+    <p>A category, a city as a bounding box, and how fine the grid is. Each cell is one or more requests; a city is usually a few hundred.</p>
+    <form id="project-form" method="dialog">
+      <div class="form-row">
+        <div><label for="p-name">Project name</label><input id="p-name" required placeholder="Barbershops in Austin"></div>
+        <div><label for="p-q">Search term (q)</label><input id="p-q" required placeholder="barbershops"></div>
+        <div><label for="p-gl">Country (gl)</label><input id="p-gl" value="us" maxlength="2"></div>
+        <div><label for="p-hl">Language (hl)</label><input id="p-hl" value="en"></div>
+      </div>
+      <div class="form-row">
+        <div><label for="p-label">Area label</label><input id="p-label" required placeholder="Austin, Texas"></div>
+        <div><label for="p-north">North</label><input id="p-north" required type="number" step="any" placeholder="30.52"></div>
+        <div><label for="p-south">South</label><input id="p-south" required type="number" step="any" placeholder="30.10"></div>
+        <div><label for="p-east">East</label><input id="p-east" required type="number" step="any" placeholder="-97.56"></div>
+        <div><label for="p-west">West</label><input id="p-west" required type="number" step="any" placeholder="-97.94"></div>
+      </div>
+      <div class="form-row">
+        <div><label for="p-step">Step (km)</label><input id="p-step" type="number" step="any" value="3"></div>
+        <div><label for="p-radius">Radius (m)</label><input id="p-radius" type="number" value="1500"></div>
+        <div><label for="p-pages">Max pages per cell</label><input id="p-pages" type="number" value="5"></div>
+        <div><label for="p-inside">Min in area per page</label><input id="p-inside" type="number" value="5"></div>
+        <div><label for="p-new">Min new per page</label><input id="p-new" type="number" value="2"></div>
+      </div>
+      <div class="help">Bounding box: open the city on a map, right-click the north-east and south-west corners to copy their coordinates. Nothing is sent until you start a sweep.</div>
+      <div class="form-foot">
+        <button type="button" id="p-cancel">Cancel</button>
+        <button type="submit" class="primary">Save project</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="key-dialog">
+    <h2>Connect your SearchApi key</h2>
+    <p>The key stays in this server's memory and is used only to call SearchApi. Prefer a <code>.env</code> file with <code>SEARCHAPI_API_KEY=…</code>.</p>
+    <form id="key-form" method="dialog">
+      <input id="key-input" type="password" placeholder="Paste your API key" autocomplete="off">
+      <div class="form-foot">
+        <button type="button" id="key-cancel">Cancel</button>
+        <button type="submit" class="primary">Connect</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="raw-dialog">
+    <h2>Raw API response <small id="raw-title"></small></h2>
+    <pre id="raw-body"></pre>
+    <div class="form-foot"><button type="button" id="raw-close">Close</button></div>
+  </dialog>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

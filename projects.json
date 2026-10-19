@@ -1,0 +1,23 @@
+{
+  "projects": [
+    {
+      "id": "austin-barbershops",
+      "name": "Barbershops in Austin",
+      "q": "barbershops",
+      "gl": "us",
+      "hl": "en",
+      "area": {
+        "label": "Austin, Texas",
+        "north": 30.52,
+        "south": 30.1,
+        "east": -97.56,
+        "west": -97.94
+      },
+      "stepKm": 3,
+      "radiusM": 1500,
+      "maxPages": 5,
+      "minInside": 5,
+      "minNew": 2
+    }
+  ]
+}

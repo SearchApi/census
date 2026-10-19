@@ -1,0 +1,11 @@
+# local state: captures and usage counter
+.data/
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# system
+.DS_Store
+node_modules/
