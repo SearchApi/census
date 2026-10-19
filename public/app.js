@@ -181,8 +181,10 @@ function mapSvg(project, d) {
   const cw = W / d.grid.cols, ch = H / d.grid.rows;
   for (const c of d.grid.cells) {
     const st = byId.get(c.id);
-    const cls = ["cell", done.has(c.id) ? "done" : "", st && st.newInside > max * 0.5 ? "hot" : "", st && !done.has(c.id) ? "active" : ""].join(" ").trim();
+    const cls = ["cell", done.has(c.id) ? "done" : "", st && !done.has(c.id) ? "active" : ""].join(" ").trim();
     const r = svg("rect", { class: cls, x: c.col * cw, y: c.row * ch, width: cw, height: ch });
+    // Shade by what the cell added: white for nothing, indigo for the most productive cell.
+    if (st) r.setAttribute("style", `fill: rgba(79, 70, 229, ${(0.06 + 0.5 * (st.newInside / max)).toFixed(2)})`);
     r.append(svg("title"));
     r.querySelector("title").textContent = st ? `${c.id}: ${st.pages} page${st.pages === 1 ? "" : "s"}, ${st.newInside} new businesses${st.stop ? `, stopped: ${st.stop}` : ""}` : `${c.id}: not requested yet`;
     s.append(r);

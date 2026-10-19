@@ -105,6 +105,7 @@ The captures are plain JSON with dates and coordinates, so the answer is checkab
 ## Reading the numbers honestly
 
 - A sweep is a snapshot of what Google Maps returned on a date for a grid of points. "Found N" is not "there are N"; a finer grid can find more.
+- The area is a rectangle, not the city limits: a box around Austin includes slices of Round Rock and Pflugerville. Say "in the box" or filter by address if the limit matters.
 - A listing without a website field does not prove the business has no website. A social or booking link as the website is a fact about the listing, not a verdict on the business.
 - Ratings and review counts are observations, not lead scores.
 - Census does no contact enrichment, no email guessing and no outreach. What you do with a public listing is on you; be a decent person about it.

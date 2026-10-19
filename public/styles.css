@@ -162,8 +162,7 @@ dialog p { color: var(--ink-2); margin: 0 0 14px; font-size: 13px; }
 .progress i { display: block; height: 100%; background: var(--indigo); transition: width 0.4s; }
 .map { width: 100%; height: auto; display: block; background: var(--page); border: 1px solid var(--line); border-radius: 10px; }
 .map .cell { fill: var(--surface); stroke: var(--line); stroke-width: 0.6; }
-.map .cell.done { fill: var(--indigo-100); }
-.map .cell.hot { fill: var(--indigo-200); }
+.map .cell.done { fill: var(--indigo-soft); }
 .map .cell.active { stroke: var(--indigo); stroke-width: 1.4; }
 .map .pin { r: 1.6; opacity: 0.85; }
 .map .pin.own { fill: #6366f1; }
