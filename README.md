@@ -12,9 +12,9 @@ One cell, one page, one GET request:
 curl -G https://www.searchapi.io/api/v1/search \
   -H "Authorization: Bearer $SEARCHAPI_API_KEY" \
   --data-urlencode "engine=google_maps" \
-  --data-urlencode "q=barbershops" \
-  --data-urlencode "ll=@30.267200,-97.743100,1500m" \
-  --data-urlencode "gl=us" --data-urlencode "hl=en" \
+  --data-urlencode "q=padarias" \
+  --data-urlencode "ll=@-23.694400,-46.565400,1500m" \
+  --data-urlencode "gl=br" --data-urlencode "hl=pt-BR" \
   --data-urlencode "page=1"
 ```
 
@@ -22,12 +22,12 @@ The response has `local_results[]`, each with `place_id`, `title`, `type`, `addr
 
 | parameter | what it does |
 |---|---|
-| `q` | the search term; natural language works (`barbershops`, `coffee shops in Austin, Texas`) |
+| `q` | the search term; natural language works (`padarias`, `bakeries in São Bernardo do Campo`, `coffee shops in Austin, Texas`) |
 | `ll` | the point the results are ranked around: `@lat,lng,<zoom>z` or `@lat,lng,<radius>m` |
-| `gl`, `hl` | country and interface language (`us`, `en`) |
+| `gl`, `hl` | country and interface language (`br`, `pt-BR`) |
 | `page` | the next 20 results around the same point |
 
-Two things the data taught us, both visible in the app. A page returns about 20 places, so one request is one screen. And pagination does not stop at the city: by page 5 or 6, results around a point in Austin start coming from hundreds of kilometres away. Google ranks by relevance and distance, not by a hard radius. So a city sweep needs a grid, a geographic stop rule, and deduplication.
+Two things the data taught us, both visible in the app. A page returns about 20 places, so one request is one screen. And pagination does not stop at the city: by page 5 or 6, results around a point in São Bernardo do Campo start coming from hundreds of kilometres away. Google ranks by relevance and distance, not by a hard radius. So a city sweep needs a grid, a geographic stop rule, and deduplication.
 
 ## How the sweep works
 
@@ -62,12 +62,12 @@ Create a [SearchApi account](https://www.searchapi.io/users/sign_up) and put the
 
 ```json
 {
-  "id": "austin-barbershops",
-  "name": "Barbershops in Austin",
-  "q": "barbershops",
-  "gl": "us", "hl": "en",
-  "area": { "label": "Austin, Texas", "north": 30.52, "south": 30.10, "east": -97.56, "west": -97.94 },
-  "stepKm": 3, "radiusM": 1500, "maxPages": 5, "minInside": 5, "minNew": 2
+  "id": "sbc-padarias",
+  "name": "Bakeries in São Bernardo do Campo",
+  "q": "padarias",
+  "gl": "br", "hl": "pt-BR",
+  "area": { "label": "São Bernardo do Campo, SP", "north": -23.65, "south": -23.80, "east": -46.50, "west": -46.62 },
+  "stepKm": 2, "radiusM": 1000, "maxPages": 5, "minInside": 5, "minNew": 2
 }
 ```
 
@@ -78,15 +78,15 @@ Settings in plain words: `stepKm` is how far apart the cells are (smaller: more 
 ## Sweeping
 
 ```sh
-npm run sweep -- --project=austin-barbershops
-npm run sweep -- --project=austin-barbershops --dry-run
-npm run sweep -- --project=austin-barbershops --max-cells=3        # a taste: the first three cells only
-npm run sweep -- --project=austin-barbershops --resume=<sweep id>  # continue a stopped or failed sweep
+npm run sweep -- --project=sbc-padarias
+npm run sweep -- --project=sbc-padarias --dry-run
+npm run sweep -- --project=sbc-padarias --max-cells=3        # a taste: the first three cells only
+npm run sweep -- --project=sbc-padarias --resume=<sweep id>  # continue a stopped or failed sweep
 ```
 
 Each request is 1 credit. The CLI prints one line per request: cell, page, rows, rows inside the area, new businesses, running total, and why a cell stopped. It stops at the first error so a bad key never burns the rest of the grid. The **Start sweep** button in the browser does the same thing, asks before spending, and shows the grid filling in.
 
-For Austin barbershops with the settings above: 208 cells, at most 1,040 requests. The real number is lower because most cells stop early; the app shows it.
+For São Bernardo bakeries with the settings above: 63 cells, at most 315 requests. The real number is lower because most cells stop early; the app shows it.
 
 ## Reading the results
 
@@ -98,14 +98,14 @@ The project page shows the unique businesses inside the area, the requests so fa
 
 Point Claude Code (or any agent) at the folder and ask, for example:
 
-> Read `.data/sweeps/austin-barbershops` (or run `npm run report`). Which parts of the city have the most barbershops without their own website, and which of those have a rating of 4.5 or more with at least 100 reviews? Answer in a short table with the Maps links and say the sweep date.
+> Read `.data/sweeps/sbc-padarias` (or run `npm run report -- --project=sbc-padarias`). Which parts of the box have the most bakeries without their own website, and which of those have a rating of 4.5 or more with at least 500 reviews? Short table with the Maps links, and say the sweep date and the request count.
 
 The captures are plain JSON with dates and coordinates, so the answer is checkable. Pair it with the [SearchApi skill for Claude](https://github.com/SamJale/SearchApi-Claude-Plugin) when you want the agent to run new sweeps.
 
 ## Reading the numbers honestly
 
 - A sweep is a snapshot of what Google Maps returned on a date for a grid of points. "Found N" is not "there are N"; a finer grid can find more.
-- The area is a rectangle, not the city limits: a box around Austin includes slices of Round Rock and Pflugerville. Say "in the box" or filter by address if the limit matters.
+- The area is a rectangle, not the city limits: a box around São Bernardo do Campo includes slices of Santo André, São Caetano and Diadema. Say "in the box" or filter by address if the limit matters.
 - A listing without a website field does not prove the business has no website. A social or booking link as the website is a fact about the listing, not a verdict on the business.
 - Ratings and review counts are observations, not lead scores.
 - Census does no contact enrichment, no email guessing and no outreach. What you do with a public listing is on you; be a decent person about it.

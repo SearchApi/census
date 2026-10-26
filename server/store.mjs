@@ -21,7 +21,7 @@ export function validateProject(input) {
   const name = String(input?.name || "").trim();
   if (!name) throw Object.assign(new Error("The project needs a name."), { status: 400 });
   const q = String(input?.q || "").trim();
-  if (!q) throw Object.assign(new Error("The project needs a search term, such as barbershops."), { status: 400 });
+  if (!q) throw Object.assign(new Error("The project needs a search term, such as padarias."), { status: 400 });
   const gl = String(input.gl || "us").toLowerCase();
   const hl = String(input.hl || "en").toLowerCase();
   if (!/^[a-z]{2}$/.test(gl)) throw Object.assign(new Error("Country (gl) is a two-letter code, such as us."), { status: 400 });

@@ -1,9 +1,9 @@
 // Sweep a whole city: every grid cell, page after page, one request each.
 //
-//   npm run sweep -- --project=austin-barbershops
-//   npm run sweep -- --project=austin-barbershops --dry-run        (prints the grid and the request ceiling, sends nothing)
-//   npm run sweep -- --project=austin-barbershops --max-cells=3    (a taste: only the first cells)
-//   npm run sweep -- --project=austin-barbershops --resume=<sweep id>
+//   npm run sweep -- --project=sbc-padarias
+//   npm run sweep -- --project=sbc-padarias --dry-run        (prints the grid and the request ceiling, sends nothing)
+//   npm run sweep -- --project=sbc-padarias --max-cells=3    (a taste: only the first cells)
+//   npm run sweep -- --project=sbc-padarias --resume=<sweep id>
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";

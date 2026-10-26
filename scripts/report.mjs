@@ -1,7 +1,7 @@
 // Markdown summary of the latest sweep (or one by id). Reads from disk, no requests.
 //
 //   npm run report
-//   npm run report -- --project=austin-barbershops --sweep=<id> --top=15
+//   npm run report -- --project=sbc-padarias --sweep=<id> --top=15
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";

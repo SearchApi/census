@@ -8,27 +8,27 @@ import { buildParams, Usage } from "../server/searchapi.mjs";
 import { Store, validateProject, slug } from "../server/store.mjs";
 import { runSweep, planSweep } from "../server/sweeper.mjs";
 
-const austin = { label: "Austin, Texas", north: 30.52, south: 30.1, east: -97.56, west: -97.94 };
-const place = (id, lat, lng, extra = {}) => ({ place_id: id, title: id, gps_coordinates: { latitude: lat, longitude: lng }, type: "Barber shop", rating: 4.5, reviews: 100, ...extra });
+const box = { label: "Test box", north: 30.52, south: 30.1, east: -97.56, west: -97.94 };
+const place = (id, lat, lng, extra = {}) => ({ place_id: id, title: id, gps_coordinates: { latitude: lat, longitude: lng }, type: "Bakery", rating: 4.5, reviews: 100, ...extra });
 const response = (rows) => ({ search_metadata: { id: "s" }, search_parameters: { engine: "google_maps" }, local_results: rows });
 
 test("grid covers the box with centred cells", () => {
-  const g = buildGrid(austin, 3);
+  const g = buildGrid(box, 3);
   assert.equal(g.rows, 16);
   assert.ok(g.cols >= 12 && g.cols <= 14);
   assert.equal(g.cells.length, g.rows * g.cols);
-  for (const c of g.cells) assert.ok(insideArea(austin, c.lat, c.lng), `cell ${c.id} is inside`);
+  for (const c of g.cells) assert.ok(insideArea(box, c.lat, c.lng), `cell ${c.id} is inside`);
   assert.equal(g.cells[0].id, "r00c00");
-  const size = areaSizeKm(austin);
+  const size = areaSizeKm(box);
   assert.ok(size.heightKm > 46 && size.heightKm < 47);
-  assert.throws(() => buildGrid({ ...austin, north: 30 }, 3));
-  assert.throws(() => buildGrid(austin, 0.1));
+  assert.throws(() => buildGrid({ ...box, north: 30 }, 3));
+  assert.throws(() => buildGrid(box, 0.1));
 });
 
 test("inside the area is a plain box test", () => {
-  assert.ok(insideArea(austin, 30.2672, -97.7431));
-  assert.ok(!insideArea(austin, 29.76, -95.37)); // Houston
-  assert.ok(!insideArea(austin, NaN, -97.7));
+  assert.ok(insideArea(box, 30.2672, -97.7431));
+  assert.ok(!insideArea(box, 29.76, -95.37)); // far outside the box
+  assert.ok(!insideArea(box, NaN, -97.7));
 });
 
 test("website classification: none, social, booking, own", () => {
@@ -36,7 +36,7 @@ test("website classification: none, social, booking, own", () => {
   assert.equal(classifyWebsite("https://www.facebook.com/OharasPubNYC/", "facebook.com"), "social");
   assert.equal(classifyWebsite("https://andisfadesociety.glossgenius.com/", "glossgenius.com"), "booking");
   assert.equal(classifyWebsite("https://andisfadesociety.glossgenius.com/", ""), "booking"); // derived from the URL
-  assert.equal(classifyWebsite("http://honestbarberatx.com/", "honestbarberatx.com"), "own");
+  assert.equal(classifyWebsite("http://padariaexemplo.com.br/", "padariaexemplo.com.br"), "own");
   assert.equal(rootDomain("shop.example.co.uk"), "example.co.uk");
   assert.equal(rootDomain("www.instagram.com"), "instagram.com");
 });
@@ -51,8 +51,8 @@ test("a cell stops on a short page, when it leaves the area, when nothing is new
 });
 
 test("buildParams formats ll with a radius in meters and never carries empty values", () => {
-  const p = buildParams({ q: " barbershops ", lat: 30.2672, lng: -97.7431, radiusM: 1500, gl: "us", hl: "en", page: 2 });
-  assert.deepEqual(p, { engine: "google_maps", q: "barbershops", ll: "@30.267200,-97.743100,1500m", gl: "us", hl: "en", page: "2" });
+  const p = buildParams({ q: " padarias ", lat: 30.2672, lng: -97.7431, radiusM: 1500, gl: "us", hl: "en", page: 2 });
+  assert.deepEqual(p, { engine: "google_maps", q: "padarias", ll: "@30.267200,-97.743100,1500m", gl: "us", hl: "en", page: "2" });
   assert.throws(() => buildParams({ q: "", lat: 1, lng: 1 }));
   assert.throws(() => buildParams({ q: "x", lat: NaN, lng: 1 }));
 });
@@ -62,7 +62,7 @@ test("aggregate dedupes by place_id, keeps unknown fields unknown, separates out
     { capturedAt: "2026-10-19T00:00:00Z", cellId: "r00c00", lat: 30.5, lng: -97.9, page: 1, response: response([place("a", 30.5, -97.9), place("b", 30.49, -97.91, { website: "https://instagram.com/b", domain: "instagram.com", rating: null, reviews: null, phone: undefined }), place("far", 29.7, -95.3)]) },
     { capturedAt: "2026-10-19T00:00:01Z", cellId: "r00c01", lat: 30.5, lng: -97.87, page: 1, stop: "short page", response: response([place("a", 30.5, -97.9), place("c", 30.5, -97.87, { website: "http://c.com", domain: "c.com" })]) },
   ];
-  const r = aggregate(pages, austin);
+  const r = aggregate(pages, box);
   assert.equal(r.requests, 2);
   assert.equal(r.inside.length, 3);
   assert.equal(r.outside.length, 1);
@@ -77,7 +77,7 @@ test("aggregate dedupes by place_id, keeps unknown fields unknown, separates out
 });
 
 test("normalizePlace builds a checkable source link and derives the domain", () => {
-  const p = normalizePlace(place("ChIJx", 30.3, -97.7, { website: "https://www.shop.example.com/x", title: "Shop & Co" }), { area: austin, cellId: "r01c01", page: 1 });
+  const p = normalizePlace(place("ChIJx", 30.3, -97.7, { website: "https://www.shop.example.com/x", title: "Shop & Co" }), { area: box, cellId: "r01c01", page: 1 });
   assert.equal(p.domain, "example.com");
   assert.equal(p.websiteKind, "own");
   assert.ok(p.source.includes("query_place_id=ChIJx"));
@@ -91,14 +91,14 @@ test("csv escapes formula-looking cells and quotes commas", () => {
 });
 
 test("validateProject normalizes and rejects bad input", () => {
-  const p = validateProject({ name: "Barbershops in Austin", q: "barbershops", gl: "US", area: austin });
-  assert.equal(p.id, "barbershops-in-austin");
-  assert.equal(p.gl, "us");
+  const p = validateProject({ name: "Bakeries in São Bernardo", q: "padarias", gl: "BR", area: box });
+  assert.equal(p.id, "bakeries-in-sao-bernardo");
+  assert.equal(p.gl, "br");
   assert.equal(p.stepKm, 3);
   assert.equal(p.maxPages, 5);
-  assert.throws(() => validateProject({ name: "x", q: "", area: austin }));
-  assert.throws(() => validateProject({ name: "x", q: "y", area: { ...austin, east: -98 } }));
-  assert.throws(() => validateProject({ name: "x", q: "y", area: austin, stepKm: 0.2 })); // too many cells
+  assert.throws(() => validateProject({ name: "x", q: "", area: box }));
+  assert.throws(() => validateProject({ name: "x", q: "y", area: { ...box, east: -98 } }));
+  assert.throws(() => validateProject({ name: "x", q: "y", area: box, stepKm: 0.2 })); // too many cells
   assert.equal(slug("Café São Paulo"), "cafe-sao-paulo");
 });
 
@@ -108,7 +108,7 @@ test("sweep saves one raw file per request, stops cells by the rules, resumes wi
     const store = new Store({ dataDir: dir, projectsFile: path.join(dir, "projects.json") });
     await store.init();
     const usage = new Usage(dir);
-    const project = validateProject({ id: "t", name: "T", q: "barbershops", area: { label: "Tiny", north: 30.30, south: 30.25, east: -97.70, west: -97.76 }, stepKm: 3, maxPages: 3, minInside: 5, minNew: 2 });
+    const project = validateProject({ id: "t", name: "T", q: "padarias", area: { label: "Tiny", north: 30.30, south: 30.25, east: -97.70, west: -97.76 }, stepKm: 3, maxPages: 3, minInside: 5, minNew: 2 });
     assert.equal(planSweep(project).cells, 4);
     const calls = [];
     // Page 1 of every cell: 20 inside; page 2: 20 rows but mostly outside the area.
