@@ -76,7 +76,7 @@ export function distanceKm(lat1, lng1, lat2, lng2) {
 
 // A "website" on a Maps listing is often not the business's own site.
 export const SOCIAL_DOMAINS = new Set(["facebook.com", "instagram.com", "linktr.ee", "tiktok.com", "x.com", "twitter.com", "youtube.com", "linkedin.com", "pinterest.com", "threads.net", "beacons.ai", "bio.site", "wa.me", "whatsapp.com", "m.me"]);
-export const BOOKING_DOMAINS = new Set(["glossgenius.com", "booksy.com", "vagaro.com", "squareup.com", "square.site", "schedulicity.com", "styleseat.com", "fresha.com", "setmore.com", "acuityscheduling.com", "as.me", "calendly.com", "mindbodyonline.com", "theCut.co".toLowerCase(), "thecut.co", "boulevard.io", "joinblvd.com", "resurva.com", "booker.com", "genbook.com", "appointy.com", "yelp.com", "doordash.com", "ubereats.com", "grubhub.com", "toasttab.com", "clover.com", "order.online", "opentable.com"]);
+export const BOOKING_DOMAINS = new Set(["glossgenius.com", "booksy.com", "vagaro.com", "squareup.com", "square.site", "schedulicity.com", "styleseat.com", "fresha.com", "setmore.com", "acuityscheduling.com", "as.me", "calendly.com", "mindbodyonline.com", "theCut.co".toLowerCase(), "thecut.co", "boulevard.io", "joinblvd.com", "resurva.com", "booker.com", "genbook.com", "appointy.com", "yelp.com", "doordash.com", "ubereats.com", "grubhub.com", "toasttab.com", "clover.com", "order.online", "opentable.com", "ifood.com.br", "rappi.com.br", "goomer.app", "lojalocal.com", "anota.ai", "cardapioweb.com", "menudino.com", "delivery.direct", "ifood.com"]);
 
 export function rootDomain(host) {
   const h = String(host || "").toLowerCase().replace(/^www\./, "");

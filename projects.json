@@ -1,6 +1,25 @@
 {
   "projects": [
     {
+      "id": "sbc-padarias",
+      "name": "Bakeries in São Bernardo do Campo",
+      "q": "padarias",
+      "gl": "br",
+      "hl": "pt-BR",
+      "area": {
+        "label": "São Bernardo do Campo, SP",
+        "north": -23.65,
+        "south": -23.8,
+        "east": -46.5,
+        "west": -46.62
+      },
+      "stepKm": 2,
+      "radiusM": 1000,
+      "maxPages": 5,
+      "minInside": 5,
+      "minNew": 2
+    },
+    {
       "id": "austin-barbershops",
       "name": "Barbershops in Austin",
       "q": "barbershops",
