@@ -5,7 +5,7 @@
       "name": "Bakeries in São Bernardo do Campo",
       "q": "padarias",
       "gl": "br",
-      "hl": "pt-BR",
+      "hl": "pt-br",
       "area": {
         "label": "São Bernardo do Campo, SP",
         "north": -23.65,
@@ -15,6 +15,25 @@
       },
       "stepKm": 2,
       "radiusM": 1000,
+      "maxPages": 5,
+      "minInside": 5,
+      "minNew": 2
+    },
+    {
+      "id": "coffee-shops-in-miami",
+      "name": "coffee shops in Miami",
+      "q": "coffee shops",
+      "gl": "us",
+      "hl": "en",
+      "area": {
+        "label": "Miami",
+        "north": 25.86,
+        "south": 25.7,
+        "east": -80.12,
+        "west": -80.32
+      },
+      "stepKm": 3,
+      "radiusM": 1500,
       "maxPages": 5,
       "minInside": 5,
       "minNew": 2
